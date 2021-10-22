@@ -10,7 +10,6 @@ __all__ = (
 
 class ServerRateLimit:
     def __init__(self, users, retrieve_user, *, redis=None):
-        raise NotImplementedError("This is only partially implemented and don't use it!")
         """
         Parameters
         ----------
@@ -65,17 +64,27 @@ class ServerRateLimit:
 
     def __call__(self, func):
         def decorator(*args, **kwargs):
+            """
+            Returns
+            -------
+            tuple[tuple[bool, dict[str, dict[str, str]]], tuple[Any]]
+            """
             user, id = self.retrieve_user(*args, **kwargs)  # noqa
             if user not in self.users:
                 raise RuntimeError("Can't use key {user!r}. You have to return one of the following: {possible}"
                                    .format(user=user, possible=", ".join(f"{k!r}" for k in self.users)))
 
-            self._record_call(user, id)
-            print(self._calculate_remaining_calls(user, id))
+            self._check_timeout(user, id)
 
-            can_use = data = ...  # ToDo
-            if not can_use:
-                return False, data
+            data = {"request": {"remaining": (remaining := self._calculate_remaining_calls(user, id)),
+                                "limit": self.users[user]["amount"],
+                                "period": self.users[user]["interval"],
+                                "timeout": (timeout := self._calculate_timeout(user, id))}}
+
+            if not remaining > 0 or timeout:
+                return (False, data), ()
+
+            self._record_call(user, id)
             return (True, data), func(*args, **kwargs)
 
         return decorator
@@ -107,7 +116,36 @@ class ServerRateLimit:
         # cleanup
         self._redis.zremrangebyscore(key, 0, time())
 
-        return self.users[user]["amount"] - int(self._redis.zcount(key, 0, 2**62 or 0))
+        return self.users[user]["amount"] - int(self._redis.zcount(key, 0, 2**62) or 0)
+
+    def _check_timeout(self, user, id):  # noqa
+        """
+        Parameters
+        ----------
+        user: str
+        id: str, int
+        """
+        key = f"cooldown-{user}-{id}"
+
+        if not self._calculate_remaining_calls(user, id) > 0:
+            if not self._redis.exists(key):
+                self._redis.append(key, 1)
+                self._redis.expire(key, self.users[user]["timeout"])
+
+    def _calculate_timeout(self, user, id):  # noqa
+        """
+        Parameters
+        ----------
+        user: str
+        id: str, int
+
+        Returns
+        -------
+        int
+        """
+        key = f"cooldown-{user}-{id}"
+
+        return max(0, self._redis.ttl(key))
 
 
 if __name__ == "__main__":
@@ -115,15 +153,10 @@ if __name__ == "__main__":
 
     @ServerRateLimit({"default": {"interval": 60, "amount": 60, "timeout": 10}}, lambda: ("default", 0), redis=r)
     def test():
-        return "test"
+        return "<--test()-->"
 
-    print(r.get("call"))
-    test()
-    print(r.get("call"))
-    test()
-    print(r.get("call"))
-    test()
-    print(r.get("call"))
-    test()
-    print(r.get("call"))
-    test()
+    from time import sleep
+
+    while True:
+        print(test())
+        sleep(.5)
