@@ -1,1 +1,1 @@
-from .JSONConfig import *
+from .jsonconfig import *

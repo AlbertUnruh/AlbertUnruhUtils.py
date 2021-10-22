@@ -130,3 +130,7 @@ dmypy.json
 
 # PyCharm
 .idea/
+
+# pipenv
+Pipfile
+Pipfile.lock
