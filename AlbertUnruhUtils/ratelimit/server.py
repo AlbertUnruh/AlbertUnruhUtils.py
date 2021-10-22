@@ -9,12 +9,12 @@ __all__ = (
 
 
 class ServerRateLimit:
-    def __init__(self, users, retrieve_user, *, redis=None):
+    def __init__(self, sections, retrieve_section, *, redis=None):
         """
         Parameters
         ----------
-        users: dict[str, dict[str, int]]
-            Parameter `users` requires following structure:
+        sections: dict[str, dict[str, int]]
+            Parameter `sections` requires following structure:
             ```py
             >>> {
             ...     "<NAME or TYPE (e.g. user, admin etc.)>": {
@@ -25,7 +25,7 @@ class ServerRateLimit:
             ...         "interval": 60  # in seconds
             ...
             ...         # type: int
-            ...         "timeout": 60  # in seconds  # if a user requests to often then the timeout 'll be applied
+            ...         "timeout": 60  # in seconds  # if a section requests to often then the timeout 'll be applied
             ...     },
             ...     "<second NAME or TYPE>": {
             ...         ...
@@ -33,30 +33,30 @@ class ServerRateLimit:
             ...     ...
             ... }
             ```
-        retrieve_user: callable[[any], tuple[str, str]]
+        retrieve_section: callable[[any], tuple[str, str]]
             This function 'll feed all it's data from the original callable.
             e.g. ```py
-            >>> @ServerRateLimit({"user": {...}, "default": {...}}, retrieve)
+            >>> @ServerRateLimit({"user": {...}, "admin": {...}}, retrieve)
             ... def foo(*args, **kwargs) -> ...:
             ...     pass
             ...
             >>> def retrieve(*args, **kwargs) -> (str, str):
             ...     '''This is just an example, you have to manage it yourself how you set it (can also be static)'''
-            ...     if "user" in kwargs:
+            ...     if "section" in kwargs:
             ...         return "user", 0
-            ...     return "default", 0
+            ...     return "admin", 0
             ```
         redis: Redis, optional
             An own redis can optionally be set.
 
         Notes
         -----
-        The first return value from ``retrieve_user``
-        is the ``user``, the second the ``id`` to have
-        every user separated.
+        The first return value from ``retrieve_section``
+        is the ``section``, the second is the ``id`` to
+        have every section separated.
         """
-        self.users = users  # type: dict[str, dict[str, int]]
-        self.retrieve_user = retrieve_user  # type: callable
+        self.sections = sections  # type: dict[str, dict[str, int]]
+        self.retrieve_section = retrieve_section  # type: callable
 
         if redis is None:
             redis = Redis("127.0.0.1", 6262, 0)
@@ -69,81 +69,81 @@ class ServerRateLimit:
             -------
             tuple[tuple[bool, dict[str, dict[str, str]]], tuple[Any]]
             """
-            user, id = self.retrieve_user(*args, **kwargs)  # noqa
-            if user not in self.users:
-                raise RuntimeError("Can't use key {user!r}. You have to return one of the following: {possible}"
-                                   .format(user=user, possible=", ".join(f"{k!r}" for k in self.users)))
+            section, id = self.retrieve_section(*args, **kwargs)  # noqa
+            if section not in self.sections:
+                raise RuntimeError("Can't use key {section!r}. You have to return one of the following: {possible}"
+                                   .format(section=section, possible=", ".join(f"{k!r}" for k in self.sections)))
 
-            self._check_timeout(user, id)
+            self._check_timeout(section, id)
 
-            data = {"request": {"remaining": (remaining := self._calculate_remaining_calls(user, id)),
-                                "limit": self.users[user]["amount"],
-                                "period": self.users[user]["interval"],
-                                "timeout": (timeout := self._calculate_timeout(user, id))}}
+            data = {"request": {"remaining": (remaining := self._calculate_remaining_calls(section, id)),
+                                "limit": self.sections[section]["amount"],
+                                "period": self.sections[section]["interval"],
+                                "timeout": (timeout := self._calculate_timeout(section, id))}}
 
             if not remaining > 0 or timeout:
                 return (False, data), ()
 
-            self._record_call(user, id)
+            self._record_call(section, id)
             return (True, data), func(*args, **kwargs)
 
         return decorator
 
-    def _record_call(self, user, id):  # noqa
+    def _record_call(self, section, id):  # noqa
         """
         Parameters
         ----------
-        user: str
+        section: str
         id: str, int
         """
-        key = f"call-{user}-{id}"
-        self._redis.execute_command(f"ZADD {key} {time()+self.users[user]['interval']} {uuid.uuid4()}")
-        self._redis.expire(key, self.users[user]["interval"])
+        key = f"call-{section}-{id}"
+        self._redis.execute_command(f"ZADD {key} {time()+self.sections[section]['interval']} {uuid.uuid4()}")
+        self._redis.expire(key, self.sections[section]["interval"])
 
-    def _calculate_remaining_calls(self, user, id):  # noqa
+    def _calculate_remaining_calls(self, section, id):  # noqa
         """
         Parameters
         ----------
-        user: str
+        section: str
         id: str, int
 
         Returns
         -------
         int
         """
-        key = f"call-{user}-{id}"
+        key = f"call-{section}-{id}"
 
         # cleanup
         self._redis.zremrangebyscore(key, 0, time())
 
-        return self.users[user]["amount"] - int(self._redis.zcount(key, 0, 2**62) or 0)
+        return self.sections[section]["amount"] - int(self._redis.zcount(key, 0, 2**62) or 0)
 
-    def _check_timeout(self, user, id):  # noqa
+    def _check_timeout(self, section, id):  # noqa
         """
         Parameters
         ----------
-        user: str
+        section: str
         id: str, int
         """
-        key = f"cooldown-{user}-{id}"
+        key = f"cooldown-{section}-{id}"
 
-        if not self._calculate_remaining_calls(user, id) > 0:
+        if not self._calculate_remaining_calls(section, id) > 0:
             if not self._redis.exists(key):
                 self._redis.append(key, 1)
-                self._redis.expire(key, self.users[user]["timeout"])
+                self._redis.expire(key, self.sections[section]["timeout"])
 
-    def _calculate_timeout(self, user, id):  # noqa
+    def _calculate_timeout(self, section, id):  # noqa
         """
         Parameters
         ----------
-        user: str
+        section: str
         id: str, int
 
         Returns
         -------
         int
         """
-        key = f"cooldown-{user}-{id}"
+        key = f"cooldown-{section}-{id}"
 
         return max(0, self._redis.ttl(key))
 
