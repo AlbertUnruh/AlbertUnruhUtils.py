@@ -41,7 +41,8 @@ class ServerRateLimit:
             ...     pass
             ...
             >>> def retrieve(*args, **kwargs) -> (str, str):
-            ...     '''This is just an example, you have to manage it yourself how you set it (can also be static)'''
+            ...     '''This is just an example, you have to manage yourself how you
+            ...        set it (can also be static by using a simple lambda-expression)'''
             ...     if "section" in kwargs:
             ...         return "user", 0
             ...     return "admin", 0
@@ -67,7 +68,7 @@ class ServerRateLimit:
             """
             Returns
             -------
-            tuple[tuple[bool, dict[str, dict[str, str]]], tuple[Any]]
+            tuple[tuple[bool, dict[str, dict[str, int]]], tuple[Any]]
             """
             section, id = self.retrieve_section(*args, **kwargs)  # noqa
             if section not in self.sections:
@@ -76,15 +77,18 @@ class ServerRateLimit:
 
             self._check_timeout(section, id)
 
-            data = {"request": {"remaining": (remaining := self._calculate_remaining_calls(section, id)),
-                                "limit": self.sections[section]["amount"],
-                                "period": self.sections[section]["interval"],
-                                "timeout": (timeout := self._calculate_timeout(section, id))}}
+            timeout = self._calculate_timeout(section, id)
+            remaining = self._calculate_remaining_calls(section, id)
+
+            data = {"request": {"remaining": -1, "limit": self.sections[section]["amount"],
+                                "period": self.sections[section]["interval"], "timeout": timeout}}
 
             if not remaining > 0 or timeout:
+                data["request"]["remaining"] = self._calculate_remaining_calls(section, id)
                 return (False, data), ()
 
             self._record_call(section, id)
+            data["request"]["remaining"] = self._calculate_remaining_calls(section, id)
             return (True, data), func(*args, **kwargs)
 
         return decorator
@@ -151,7 +155,7 @@ class ServerRateLimit:
 if __name__ == "__main__":
     r = Redis("127.0.0.1", 6262, 0)
 
-    @ServerRateLimit({"default": {"interval": 60, "amount": 60, "timeout": 10}}, lambda: ("default", 0), redis=r)
+    @ServerRateLimit({"default": {"interval": 10, "amount": 10, "timeout": 20}}, lambda: ("default", 0), redis=r)
     def test():
         return "<--test()-->"
 
