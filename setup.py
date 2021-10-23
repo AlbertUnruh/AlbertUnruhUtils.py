@@ -16,10 +16,17 @@ with open("requirements.txt") as f:
     requirements = f.readlines()
 
 
+name = "AlbertUnruhUtils"
+packages = [
+    f"{name}.config",
+    f"{name}.ratelimit"
+]
+
+
 setup(
-    name="AlbertUnruhUtils",
+    name=name,
     version=version,
-    packages=["AlbertUnruhUtils"],
+    packages=packages,
     url=url,
     license=license,
     author=author,
