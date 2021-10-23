@@ -9,12 +9,15 @@ __all__ = (
 
 
 class ServerRateLimit:
+    """Docs 'll coming soon... (If you want docs right now you can take a look into ``__init__``)"""
+    __slots__ = ("sections", "retrieve_section", "_redis")
+
     def __init__(self, sections, retrieve_section, *, redis=None):
         """
         Parameters
         ----------
         sections: dict[str, dict[str, int]]
-            Parameter `sections` requires following structure:
+            Parameter ``sections`` requires following structure:
             ```py
             >>> {
             ...     "<NAME or TYPE (e.g. user, admin etc.)>": {
@@ -43,9 +46,9 @@ class ServerRateLimit:
             >>> def retrieve(*args, **kwargs) -> (str, str):
             ...     '''This is just an example, you have to manage yourself how you
             ...        set it (can also be static by using a simple lambda-expression)'''
-            ...     if "section" in kwargs:
-            ...         return "user", 0
-            ...     return "admin", 0
+            ...     if "admin_id" in kwargs:
+            ...         return "admin", 0
+            ...     return "user", 0
             ```
         redis: Redis, optional
             An own redis can optionally be set.
@@ -90,7 +93,6 @@ class ServerRateLimit:
             self._record_call(section, id)
             data["request"]["remaining"] = self._calculate_remaining_calls(section, id)
             return (True, data), func(*args, **kwargs)
-
         return decorator
 
     def _record_call(self, section, id):  # noqa

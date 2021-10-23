@@ -12,6 +12,9 @@ DEFAULT_CONFIG = {
 
 
 class JSONConfig:
+    """Doc 'll coming soon..."""
+    __slots__ = ("default", "_config", "_file", "_default_config")
+
     def __init__(self, *, file, default_return=None, default_config=None):
         """
         Parameters
@@ -27,7 +30,8 @@ class JSONConfig:
         except (OSError, ValueError) as e:
             import sys
             print(
-                f"Ignoring {e.__class__.__name__} ({e.args[0]}); Overwriting (existing) configuration at {file!r}",
+                f"Ignoring {e.__class__.__name__} ({'; '.join(str(arg) for arg in e.args)}); "
+                f"Overwriting (existing) configuration at {file!r}",
                 file=sys.stderr
             )
 
