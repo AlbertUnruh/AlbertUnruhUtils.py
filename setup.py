@@ -18,6 +18,7 @@ with open("requirements.txt") as f:
 
 name = "AlbertUnruhUtils"
 packages = [
+    f"{name}",
     f"{name}.config",
     f"{name}.ratelimit"
 ]
