@@ -1,6 +1,7 @@
 from redis import Redis
 from time import time
 import uuid
+import functools
 
 
 __all__ = (
@@ -93,7 +94,7 @@ class ServerRateLimit:
             self._record_call(section, id)
             data["request"]["remaining"] = self._calculate_remaining_calls(section, id)
             return (True, data), func(*args, **kwargs)
-        return decorator
+        return functools.update_wrapper(decorator, func)
 
     def _record_call(self, section, id):  # noqa
         """
@@ -155,7 +156,7 @@ class ServerRateLimit:
 
 
 if __name__ == "__main__":
-    r = Redis("127.0.0.1", 6262, 0)
+    r = Redis()
 
     @ServerRateLimit({"default": {"interval": 10, "amount": 10, "timeout": 20}}, lambda: ("default", 0), redis=r)
     def test():
@@ -164,5 +165,5 @@ if __name__ == "__main__":
     from time import sleep
 
     while True:
-        print(test())
+        print(test.__name__, test())
         sleep(.5)
