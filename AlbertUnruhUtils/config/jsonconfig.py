@@ -1,9 +1,7 @@
 from json import load, dump
 
 
-__all__ = (
-    "JSONConfig",
-)
+__all__ = ("JSONConfig",)
 
 
 DEFAULT_CONFIG = {
@@ -13,6 +11,7 @@ DEFAULT_CONFIG = {
 
 class JSONConfig:
     """Doc 'll coming soon..."""
+
     __slots__ = ("default", "_config", "_file", "_default_config")
 
     def __init__(self, *, file, default_return=None, default_config=None):
@@ -29,10 +28,11 @@ class JSONConfig:
                 self._config = load(f)
         except (OSError, ValueError) as e:
             import sys
+
             print(
                 f"Ignoring {e.__class__.__name__} ({'; '.join(str(arg) for arg in e.args)}); "
                 f"Overwriting (existing) configuration at {file!r}",
-                file=sys.stderr
+                file=sys.stderr,
             )
 
             self._config = default_config or DEFAULT_CONFIG
@@ -49,7 +49,9 @@ class JSONConfig:
 
     @file.setter
     def file(self, value):
-        self.__init__(file=value, default_return=self.default, default_config=self._default_config)
+        self.__init__(
+            file=value, default_return=self.default, default_config=self._default_config
+        )
 
     @property
     def config(self):
@@ -57,8 +59,9 @@ class JSONConfig:
 
     @config.setter
     def config(self, value):
-        assert isinstance(value, dict), \
-            f"{self.__class__.__name__}.config must be an instance of 'dict', not {value.__class__.__name__!r}!"
+        assert isinstance(
+            value, dict
+        ), f"{self.__class__.__name__}.config must be an instance of 'dict', not {value.__class__.__name__!r}!"
         self._config = value
         with open(self._file, "w") as f:
             dump(self._config, f, indent=4)

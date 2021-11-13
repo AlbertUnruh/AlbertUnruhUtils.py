@@ -4,13 +4,12 @@ import uuid
 import functools
 
 
-__all__ = (
-    "ServerRateLimit",
-)
+__all__ = ("ServerRateLimit",)
 
 
 class ServerRateLimit:
     """Docs 'll coming soon... (If you want docs right now you can take a look into ``__init__``)"""
+
     __slots__ = ("sections", "retrieve_section", "_redis")
 
     def __init__(self, sections, retrieve_section, *, redis=None):
@@ -76,24 +75,37 @@ class ServerRateLimit:
             """
             section, id = self.retrieve_section(*args, **kwargs)  # noqa
             if section not in self.sections:
-                raise RuntimeError("Can't use key {section!r}. You have to return one of the following: {possible}"
-                                   .format(section=section, possible=", ".join(f"{k!r}" for k in self.sections)))
+                raise RuntimeError(
+                    "Can't use key {section!r}. You have to return one of the following: {possible}".format(
+                        section=section,
+                        possible=", ".join(f"{k!r}" for k in self.sections),
+                    )
+                )
 
             self._check_timeout(section, id)
 
             timeout = self._calculate_timeout(section, id)
             remaining = self._calculate_remaining_calls(section, id)
 
-            data = {"request": {"remaining": -1, "limit": self.sections[section]["amount"],
-                                "period": self.sections[section]["interval"], "timeout": timeout}}
+            data = {
+                "request": {
+                    "remaining": -1,
+                    "limit": self.sections[section]["amount"],
+                    "period": self.sections[section]["interval"],
+                    "timeout": timeout,
+                }
+            }
 
             if not remaining > 0 or timeout:
-                data["request"]["remaining"] = self._calculate_remaining_calls(section, id)
+                data["request"]["remaining"] = self._calculate_remaining_calls(
+                    section, id
+                )
                 return (False, data), ()
 
             self._record_call(section, id)
             data["request"]["remaining"] = self._calculate_remaining_calls(section, id)
             return (True, data), func(*args, **kwargs)
+
         return functools.update_wrapper(decorator, func)
 
     def _record_call(self, section, id):  # noqa
@@ -104,7 +116,9 @@ class ServerRateLimit:
         id: str, int
         """
         key = f"call-{section}-{id}"
-        self._redis.execute_command(f"ZADD {key} {time()+self.sections[section]['interval']} {uuid.uuid4()}")
+        self._redis.execute_command(
+            f"ZADD {key} {time()+self.sections[section]['interval']} {uuid.uuid4()}"
+        )
         self._redis.expire(key, self.sections[section]["interval"])
 
     def _calculate_remaining_calls(self, section, id):  # noqa
@@ -123,7 +137,9 @@ class ServerRateLimit:
         # cleanup
         self._redis.zremrangebyscore(key, 0, time())
 
-        return self.sections[section]["amount"] - int(self._redis.zcount(key, 0, 2**62) or 0)
+        return self.sections[section]["amount"] - int(
+            self._redis.zcount(key, 0, 2 ** 62) or 0
+        )
 
     def _check_timeout(self, section, id):  # noqa
         """
@@ -158,7 +174,11 @@ class ServerRateLimit:
 if __name__ == "__main__":
     r = Redis()
 
-    @ServerRateLimit({"default": {"interval": 10, "amount": 10, "timeout": 20}}, lambda: ("default", 0), redis=r)
+    @ServerRateLimit(
+        {"default": {"interval": 10, "amount": 10, "timeout": 20}},
+        lambda: ("default", 0),
+        redis=r,
+    )
     def test():
         return "<--test()-->"
 
@@ -166,4 +186,4 @@ if __name__ == "__main__":
 
     while True:
         print(test.__name__, test())
-        sleep(.5)
+        sleep(0.5)

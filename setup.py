@@ -5,11 +5,19 @@ import re
 with open("AlbertUnruhUtils/__init__.py") as f:
     file = f.read()
 
-version = re.search(r"^__version__\s*=\s*[\'\"]([^\'\"]*)[\'\"]", file, re.MULTILINE).group(1)
+version = re.search(
+    r"^__version__\s*=\s*[\'\"]([^\'\"]*)[\'\"]", file, re.MULTILINE
+).group(1)
 url = re.search(r"^__url__\s*=\s*[\'\"]([^\'\"]*)[\'\"]", file, re.MULTILINE).group(1)
-license = re.search(r"^__license__\s*=\s*[\'\"]([^\'\"]*)[\'\"]", file, re.MULTILINE).group(1)  # noqa
-author = re.search(r"^__author__\s*=\s*[\'\"]([^\'\"]*)[\'\"]", file, re.MULTILINE).group(1)
-description = re.search(r"^__description__\s*=\s*[\'\"]([^\'\"]*)[\'\"]", file, re.MULTILINE).group(1)
+license = re.search(  # noqa
+    r"^__license__\s*=\s*[\'\"]([^\'\"]*)[\'\"]", file, re.MULTILINE
+).group(1)
+author = re.search(
+    r"^__author__\s*=\s*[\'\"]([^\'\"]*)[\'\"]", file, re.MULTILINE
+).group(1)
+description = re.search(
+    r"^__description__\s*=\s*[\'\"]([^\'\"]*)[\'\"]", file, re.MULTILINE
+).group(1)
 
 
 with open("requirements.txt") as f:
@@ -17,11 +25,7 @@ with open("requirements.txt") as f:
 
 
 name = "AlbertUnruhUtils"
-packages = [
-    f"{name}",
-    f"{name}.config",
-    f"{name}.ratelimit"
-]
+packages = [f"{name}", f"{name}.config", f"{name}.ratelimit"]
 
 
 setup(
@@ -32,5 +36,5 @@ setup(
     license=license,
     author=author,
     description=description,
-    install_requires=requirements
+    install_requires=requirements,
 )
