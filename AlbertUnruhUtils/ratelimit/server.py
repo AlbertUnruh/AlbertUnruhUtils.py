@@ -8,7 +8,7 @@ __all__ = ("ServerRateLimit",)
 
 
 class ServerRateLimit:
-    """Docs 'll coming soon... (If you want docs right now you can take a look into ``__init__``)"""
+    """Docs 'll come soon... (If you want docs right now you can take a look into ``__init__``)"""
 
     __slots__ = ("sections", "retrieve_section", "_redis")
 
