@@ -5,6 +5,7 @@ __copyright__ = f"(c) {__author__}"
 __version__ = "2021.11.13.000"  # pattern: 'YYYY.MM.DD.{increment:3}'
 __description__ = "A collection of utils written in Python."
 
+from . import asynchronous
 from . import config
 from . import ratelimit
 
