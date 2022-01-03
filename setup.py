@@ -25,7 +25,13 @@ with open("requirements.txt") as f:
 
 
 name = "AlbertUnruhUtils"
-packages = [f"{name}", f"{name}.config", f"{name}.ratelimit"]
+packages = [
+    f"{name}",
+    f"{name}.config",
+    f"{name}.ratelimit",
+    f"{name}.asynchronous",
+    f"{name}.asynchronous.ratelimit",
+]
 
 
 setup(
