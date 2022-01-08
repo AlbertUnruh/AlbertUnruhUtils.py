@@ -3,7 +3,7 @@ from pathlib import Path
 import re
 
 
-__path__ = Path(__file__).parent
+__path__ = Path(__file__).parent.absolute()
 
 
 with open(__path__ / "AlbertUnruhUtils/__init__.py") as f:
@@ -24,7 +24,10 @@ description = re.search(
 ).group(1)
 
 
-with open(__path__ / "requirements.txt") as f:
+with open(__path__ / "./README.md") as f:
+    long_description = f.read()
+
+with open(__path__ / "./requirements.txt") as f:
     requirements = f.readlines()
 
 
@@ -46,5 +49,6 @@ setup(
     license=license,
     author=author,
     description=description,
+    long_description=long_description,
     install_requires=requirements,
 )
