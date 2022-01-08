@@ -1,3 +1,4 @@
+import typing
 from json import load, dump
 
 
@@ -10,11 +11,22 @@ DEFAULT_CONFIG = {
 
 
 class JSONConfig:
-    """Doc 'll coming soon..."""
+    """Docs 'll come soon..."""
 
-    __slots__ = ("default", "_config", "_file", "_default_config")
+    __slots__ = (
+        "default",
+        "_config",
+        "_file",
+        "_default_config",
+    )
 
-    def __init__(self, *, file, default_return=None, default_config=None):
+    def __init__(
+        self,
+        *,
+        file: str,
+        default_return: typing.Any = None,
+        default_config: dict = None,
+    ):
         """
         Parameters
         ----------
@@ -44,21 +56,21 @@ class JSONConfig:
         self._default_config = default_config
 
     @property
-    def file(self):
+    def file(self) -> str:
         return self._file
 
     @file.setter
-    def file(self, value):
+    def file(self, value: str) -> None:
         self.__init__(
             file=value, default_return=self.default, default_config=self._default_config
         )
 
     @property
-    def config(self):
+    def config(self) -> dict:
         return self._config
 
     @config.setter
-    def config(self, value):
+    def config(self, value: str) -> None:
         assert isinstance(
             value, dict
         ), f"{self.__class__.__name__}.config must be an instance of 'dict', not {value.__class__.__name__!r}!"

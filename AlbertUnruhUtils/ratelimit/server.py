@@ -1,3 +1,5 @@
+import typing
+
 from redis import Redis
 from time import time
 import uuid
@@ -7,12 +9,29 @@ import functools
 __all__ = ("ServerRateLimit",)
 
 
+C_IN = typing.TypeVar("C_IN")
+C_OUT = typing.TypeVar("C_OUT")
+
+
 class ServerRateLimit:
     """Docs 'll come soon... (If you want docs right now you can take a look into ``__init__``)"""
 
-    __slots__ = ("sections", "retrieve_section", "_redis")
+    section: dict[str, dict[str, int]]
+    retrieve_section: typing.Callable[[...], tuple[str, typing.Union[str, int]]]
 
-    def __init__(self, sections, retrieve_section, *, redis=None):
+    __slots__ = (
+        "sections",
+        "retrieve_section",
+        "_redis",
+    )
+
+    def __init__(
+        self,
+        sections: dict[str, dict[str, int]],
+        retrieve_section: typing.Callable[[...], tuple[str, typing.Union[str, int]]],
+        *,
+        redis: Redis = None,
+    ):
         """
         Parameters
         ----------
@@ -36,7 +55,7 @@ class ServerRateLimit:
             ...     ...
             ... }
             ```
-        retrieve_section: callable[[any], tuple[str, str]]
+        retrieve_section: typing.Callable[[...], tuple[str, typing.Union[str, int]]]
             This function 'll feed all it's data from the original callable.
             e.g. ```py
             >>> @ServerRateLimit({"user": {...}, "admin": {...}}, retrieve)
@@ -59,19 +78,22 @@ class ServerRateLimit:
         is the ``section``, the second is the ``id`` to
         have every section separated.
         """
-        self.sections = sections  # type: dict[str, dict[str, int]]
-        self.retrieve_section = retrieve_section  # type: callable
+        self.sections = sections
+        self.retrieve_section = retrieve_section
 
         if redis is None:
             redis = Redis("127.0.0.1", 6262, 0)
         self._redis = redis
 
-    def __call__(self, func):
-        def decorator(*args, **kwargs):
+    def __call__(
+        self,
+        func: typing.Callable[[C_IN], C_OUT],
+    ) -> typing.Callable[[C_IN], tuple[tuple[bool, dict[str, int]], C_OUT]]:
+        def decorator(*args, **kwargs) -> tuple[tuple[bool, dict[str, int]], C_OUT]:
             """
             Returns
             -------
-            tuple[tuple[bool, dict[str, dict[str, int]]], tuple[Any]]
+            tuple[tuple[bool, dict[str, int]], C_OUT]
             """
             section, id = self.retrieve_section(*args, **kwargs)  # noqa
             if section not in self.sections:
@@ -108,7 +130,11 @@ class ServerRateLimit:
 
         return functools.update_wrapper(decorator, func)
 
-    def _record_call(self, section, id):  # noqa
+    def _record_call(
+        self,
+        section: str,
+        id: typing.Union[str, int],  # noqa
+    ) -> None:
         """
         Parameters
         ----------
@@ -121,7 +147,11 @@ class ServerRateLimit:
         )
         self._redis.expire(key, self.sections[section]["interval"])
 
-    def _calculate_remaining_calls(self, section, id):  # noqa
+    def _calculate_remaining_calls(
+        self,
+        section: str,
+        id: typing.Union[str, int],  # noqa
+    ) -> int:
         """
         Parameters
         ----------
@@ -141,7 +171,11 @@ class ServerRateLimit:
             self._redis.zcount(key, 0, 2 ** 62) or 0
         )
 
-    def _check_timeout(self, section, id):  # noqa
+    def _check_timeout(
+        self,
+        section: str,
+        id: typing.Union[str, int],  # noqa
+    ) -> None:
         """
         Parameters
         ----------
@@ -155,7 +189,11 @@ class ServerRateLimit:
                 self._redis.append(key, 1)
                 self._redis.expire(key, self.sections[section]["timeout"])
 
-    def _calculate_timeout(self, section, id):  # noqa
+    def _calculate_timeout(
+        self,
+        section: str,
+        id: typing.Union[str, int],  # noqa
+    ) -> int:
         """
         Parameters
         ----------

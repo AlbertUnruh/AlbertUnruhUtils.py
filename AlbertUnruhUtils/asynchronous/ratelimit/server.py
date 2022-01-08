@@ -9,15 +9,24 @@ import functools
 __all__ = ("ServerRateLimit",)
 
 
+C_IN = typing.TypeVar("C_IN")
+C_OUT = typing.TypeVar("C_OUT")
+
+
 class ServerRateLimit:
     """Docs 'll come soon... (If you want docs right now you can take a look into ``__init__``)"""
+
+    sections: dict[str, dict[str, int]]
+    retrieve_section: typing.Callable[[...], typing.Awaitable[tuple[str, str]]]
 
     __slots__ = ("sections", "retrieve_section", "_redis")
 
     def __init__(
         self,
         sections: dict[str, dict[str, int]],
-        retrieve_section: typing.Callable[[...], typing.Awaitable[tuple[str, str]]],
+        retrieve_section: typing.Callable[
+            [...], typing.Awaitable[tuple[str, typing.Union[str, int]]]
+        ],
         *,
         redis: Redis = None,
     ):
@@ -44,7 +53,7 @@ class ServerRateLimit:
             ...     ...
             ... }
             ```
-        retrieve_section: typing.Callable[[...], typing.Awaitable[tuple[str, str]]]
+        retrieve_section: typing.Callable[[...], typing.Awaitable[tuple[str, typing.Union[str, int]]]]
             This function 'll feed all it's data from the original callable.
             e.g. ```py
             >>> @ServerRateLimit({"user": {...}, "admin": {...}}, retrieve)
@@ -67,21 +76,26 @@ class ServerRateLimit:
         is the ``section``, the second is the ``id`` to
         have every section separated.
         """
-        self.sections = sections  # type: dict[str, dict[str, int]]
-        self.retrieve_section = (
-            retrieve_section
-        )  # type: typing.Callable[[...], typing.Awaitable[tuple[str, str]]]
+        self.sections = sections
+        self.retrieve_section = retrieve_section
 
         if redis is None:
             redis = Redis(host="127.0.0.1", port=6262, db=0)
         self._redis = redis
 
-    def __call__(self, func: typing.Callable[[...], typing.Coroutine]):
-        async def decorator(*args, **kwargs):
+    def __call__(
+        self,
+        func: typing.Callable[[C_IN], typing.Awaitable[C_OUT]],
+    ) -> typing.Callable[
+        [C_IN], typing.Awaitable[tuple[tuple[bool, dict[str, int]], C_OUT]]
+    ]:
+        async def decorator(
+            *args, **kwargs
+        ) -> tuple[tuple[bool, dict[str, int]], C_OUT]:
             """
             Returns
             -------
-            tuple[tuple[bool, dict[str, dict[str, int]]], tuple[...]]
+            tuple[tuple[bool, dict[str, int]], C_OUT]
             """
             section, id = await self.retrieve_section(*args, **kwargs)  # noqa
             if section not in self.sections:
@@ -120,7 +134,11 @@ class ServerRateLimit:
 
         return functools.update_wrapper(decorator, func)
 
-    async def _record_call(self, section, id):  # noqa
+    async def _record_call(
+        self,
+        section: str,
+        id: typing.Union[str, int],  # noqa
+    ) -> None:
         """
         Parameters
         ----------
@@ -133,7 +151,11 @@ class ServerRateLimit:
         )
         await self._redis.expire(key, self.sections[section]["interval"])
 
-    async def _calculate_remaining_calls(self, section, id):  # noqa
+    async def _calculate_remaining_calls(
+        self,
+        section: str,
+        id: typing.Union[str, int],  # noqa
+    ) -> int:
         """
         Parameters
         ----------
@@ -153,7 +175,11 @@ class ServerRateLimit:
             await self._redis.zcount(key, 0, 2 ** 62) or 0
         )
 
-    async def _check_timeout(self, section, id):  # noqa
+    async def _check_timeout(
+        self,
+        section: str,
+        id: typing.Union[str, int],  # noqa
+    ) -> None:
         """
         Parameters
         ----------
@@ -167,7 +193,11 @@ class ServerRateLimit:
                 await self._redis.append(key, 1)
                 await self._redis.expire(key, self.sections[section]["timeout"])
 
-    async def _calculate_timeout(self, section, id):  # noqa
+    async def _calculate_timeout(
+        self,
+        section: str,
+        id: typing.Union[str, int],  # noqa
+    ) -> int:
         """
         Parameters
         ----------
