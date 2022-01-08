@@ -12,5 +12,24 @@
 A collection of utils written in Python
 
 
+# Installing
+**Python 3.9 or higher is required!**
+
+via pip: (recommended)
+```shell
+pip3 install -U AlbertUnruhUtils
+```
+
+from source: (`git` must be installed)
+```shell
+git clone https://github.com/AlbertUnruh/AlbertUnruhUtils.py
+cd AlbertUnruhUtils.py
+pip3 install -U .
+```
+or simply
+```shell
+pip3 install -U git+https://github.com/AlbertUnruh/AlbertUnruhUtils.py.git#egg=AlbertUnruhUtils
+```
+
 # Docs
 coming soon...
