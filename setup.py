@@ -1,8 +1,12 @@
 from setuptools import setup
+from pathlib import Path
 import re
 
 
-with open("AlbertUnruhUtils/__init__.py") as f:
+__path__ = Path(__file__).parent
+
+
+with open(__path__ / "AlbertUnruhUtils/__init__.py") as f:
     file = f.read()
 
 version = re.search(
@@ -20,7 +24,7 @@ description = re.search(
 ).group(1)
 
 
-with open("requirements.txt") as f:
+with open(__path__ / "requirements.txt") as f:
     requirements = f.readlines()
 
 
