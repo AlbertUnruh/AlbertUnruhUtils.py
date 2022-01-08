@@ -1,12 +1,8 @@
 from setuptools import setup
-from pathlib import Path
 import re
 
 
-__path__ = Path(__file__).parent.absolute()
-
-
-with open(__path__ / "AlbertUnruhUtils/__init__.py") as f:
+with open("./AlbertUnruhUtils/__init__.py") as f:
     file = f.read()
 
 version = re.search(
@@ -24,31 +20,10 @@ description = re.search(
 ).group(1)
 
 
-with open(__path__ / "./README.md") as f:
-    long_description = f.read()
-
-with open(__path__ / "./requirements.txt") as f:
-    requirements = f.readlines()
-
-
-name = "AlbertUnruhUtils"
-packages = [
-    f"{name}",
-    f"{name}.config",
-    f"{name}.ratelimit",
-    f"{name}.asynchronous",
-    f"{name}.asynchronous.ratelimit",
-]
-
-
 setup(
-    name=name,
     version=version,
-    packages=packages,
     url=url,
     license=license,
     author=author,
     description=description,
-    long_description=long_description,
-    install_requires=requirements,
 )
