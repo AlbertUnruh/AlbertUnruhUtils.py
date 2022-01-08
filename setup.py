@@ -20,10 +20,18 @@ description = re.search(
 ).group(1)
 
 
+# not in setup.cfg for GitHub's Dependency-Graph
+install_requires = [
+    "redis~=4.1.0",
+    "aioredis~=2.0.1",
+]
+
+
 setup(
     version=version,
     url=url,
     license=license,
     author=author,
     description=description,
+    install_requires=install_requires,
 )
