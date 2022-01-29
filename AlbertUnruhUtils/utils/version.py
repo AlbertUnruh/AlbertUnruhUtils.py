@@ -52,7 +52,7 @@ def _version_to_tuple(
 
             if keep_dev_version:
                 covered = len(sep.join(str(v) for v in t_version))
-                t_version += (version[covered:],)
+                t_version += (version[covered:].removeprefix(sep),)
                 break
 
     if semver:
@@ -102,9 +102,8 @@ def get_version(
 
     # get version
     if hasattr(module, "version_info"):
-        return tuple(module.version_info)
-
-    if hasattr(module, "__version__"):
+        version = sep.join(str(v) for v in module.version_info)
+    elif hasattr(module, "__version__"):
         version = module.__version__
     elif hasattr(module, "version"):
         version = module.version
