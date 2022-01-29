@@ -1,5 +1,5 @@
-[![PyPi Version](https://img.shields.io/pypi/v/AlbertUnruhUtils.py)](https://pypi.org/project/AlbertUnruhUtils)
-[![Python Versions](https://img.shields.io/pypi/pyversions/AlbertUnruhUtils.py)](https://pypi.org/project/AlbertUnruhUtils)
+[![PyPi Version](https://img.shields.io/pypi/v/AlbertUnruhUtils.py)](https://pypi.org/project/AlbertUnruhUtils.py)
+[![Python Versions](https://img.shields.io/pypi/pyversions/AlbertUnruhUtils.py)](https://pypi.org/project/AlbertUnruhUtils.py)
 [![Build](https://img.shields.io/github/workflow/status/AlbertUnruh/AlbertUnruhUtils.py/Upload%20Python%20Package)](https://github.com/AlbertUnruh/AlbertUnruhUtils.py/actions/workflows/python-publish.yml)
 [![License: MIT](https://img.shields.io/pypi/l/AlbertUnruhUtils.py)](https://choosealicense.com/licenses/mit)
 [![Code Style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -28,10 +28,6 @@ latest develop-version:
 git clone https://github.com/AlbertUnruh/AlbertUnruhUtils.py
 cd AlbertUnruhUtils.py
 pip3 install -U .
-```
-or simply
-```shell
-pip3 install -U git+https://github.com/AlbertUnruh/AlbertUnruhUtils.py.git#egg=AlbertUnruhUtils.py
 ```
 
 
