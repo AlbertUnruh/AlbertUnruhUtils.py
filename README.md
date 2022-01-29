@@ -1,30 +1,24 @@
-[![PyPi Version](https://img.shields.io/pypi/v/AlbertUnruhUtils)](https://pypi.org/project/AlbertUnruhUtils)
-[![Python Versions](https://img.shields.io/pypi/pyversions/AlbertUnruhUtils)](https://pypi.org/project/AlbertUnruhUtils)
+[![PyPi Version](https://img.shields.io/pypi/v/AlbertUnruhUtils.py)](https://pypi.org/project/AlbertUnruhUtils)
+[![Python Versions](https://img.shields.io/pypi/pyversions/AlbertUnruhUtils.py)](https://pypi.org/project/AlbertUnruhUtils)
 [![Build](https://img.shields.io/github/workflow/status/AlbertUnruh/AlbertUnruhUtils.py/Upload%20Python%20Package)](https://github.com/AlbertUnruh/AlbertUnruhUtils.py/actions/workflows/python-publish.yml)
-[![License: MIT](https://img.shields.io/pypi/l/AlbertUnruhUtils)](https://choosealicense.com/licenses/mit)
+[![License: MIT](https://img.shields.io/pypi/l/AlbertUnruhUtils.py)](https://choosealicense.com/licenses/mit)
 [![Code Style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![[tokei.rs - Code Lines]](https://tokei.rs/b1/github/AlbertUnruh/AlbertUnruhUtils.py?category=code)](https://tokei.rs)
 [![[tokei.rs - Total Lines]](https://tokei.rs/b1/github/AlbertUnruh/AlbertUnruhUtils.py?category=lines)](https://tokei.rs)
 [![[tokei.rs - Files]](https://tokei.rs/b1/github/AlbertUnruh/AlbertUnruhUtils.py?category=files)](https://tokei.rs)
 
 
-# **Note:**
-**Please head over to [AlbertUnruhUtils.py](https://pypi.org/project/AlbertUnruhUtils.py).**
-**This project is discontinued here!**
-**But it 'll be continued here ([AlbertUnruhUtils.py](https://pypi.org/project/AlbertUnruhUtils.py)) and follows [SemVer](https://semver.org).**
 
----
-
-# AlbertUnruhUtils
+# AlbertUnruhUtils.py
 A collection of utils written in Python
 
 
-# Installing
+# Installation
 **Python 3.9 or higher is required!**
 
 via pip: (recommended)
 ```shell
-pip3 install -U AlbertUnruhUtils
+pip3 install -U AlbertUnruhUtils.py
 ```
 
 latest develop-version:
@@ -37,7 +31,7 @@ pip3 install -U .
 ```
 or simply
 ```shell
-pip3 install -U git+https://github.com/AlbertUnruh/AlbertUnruhUtils.py.git#egg=AlbertUnruhUtils
+pip3 install -U git+https://github.com/AlbertUnruh/AlbertUnruhUtils.py.git#egg=AlbertUnruhUtils.py
 ```
 
 
