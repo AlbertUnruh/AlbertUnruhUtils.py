@@ -8,6 +8,13 @@
 [![[tokei.rs - Files]](https://tokei.rs/b1/github/AlbertUnruh/AlbertUnruhUtils.py?category=files)](https://tokei.rs)
 
 
+# **Note:**
+**Please head over to [AlbertUnruhUtils.py](https://pypi.org/project/AlbertUnruhUtils.py).**
+**This project is discontinued here!**
+**But it 'll be continued here ([AlbertUnruhUtils.py](https://pypi.org/project/AlbertUnruhUtils.py)) and follows [SemVer](https://semver.org).**
+
+---
+
 # AlbertUnruhUtils
 A collection of utils written in Python
 
@@ -20,7 +27,9 @@ via pip: (recommended)
 pip3 install -U AlbertUnruhUtils
 ```
 
-from source: (`git` must be installed)
+latest develop-version:
+
+*(requires git to be installed)*
 ```shell
 git clone https://github.com/AlbertUnruh/AlbertUnruhUtils.py
 cd AlbertUnruhUtils.py
@@ -30,6 +39,7 @@ or simply
 ```shell
 pip3 install -U git+https://github.com/AlbertUnruh/AlbertUnruhUtils.py.git#egg=AlbertUnruhUtils
 ```
+
 
 # Docs
 coming soon...
