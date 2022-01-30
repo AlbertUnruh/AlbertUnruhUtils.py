@@ -1,8 +1,11 @@
-import typing
-from json import load, dump
-
-
 __all__ = ("JSONConfig",)
+
+
+import typing
+from json import (
+    dump,
+    load,
+)
 
 
 DEFAULT_CONFIG = {

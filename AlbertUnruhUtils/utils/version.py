@@ -1,15 +1,15 @@
-import importlib
-import types
-import typing
-import re
-
-
 __all__ = (
     "get_version",
     "is_version",
     "is_lower_version",
     "is_higher_version",
 )
+
+
+import importlib
+import re
+import types
+import typing
 
 
 def _version_to_tuple(
