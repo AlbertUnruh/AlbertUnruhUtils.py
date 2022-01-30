@@ -1,1 +1,19 @@
-from .ratelimit import *
+try:
+    from .ratelimit import *
+
+    # insert other imports here...
+except ImportError:
+    import warnings
+    import copy
+
+    filters = copy.copy(warnings.filters)
+    warnings.filters = []
+    warnings.warn(
+        "{pkg!r} must be installed via 'pip install AlbertUnruhUtils.py[{extra}]'".format(
+            pkg=__package__, extra="async"
+        ),
+        category=UserWarning,
+    )
+    warnings.filters = filters
+
+    raise
