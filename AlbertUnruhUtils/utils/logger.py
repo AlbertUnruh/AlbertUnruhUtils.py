@@ -1,9 +1,13 @@
-import typing
-import sys
-from logging import Formatter, StreamHandler, getLogger
-
-
 __all__ = ("get_logger",)
+
+
+import sys
+import typing
+from logging import (
+    getLogger,
+    Formatter,
+    StreamHandler,
+)
 
 
 _LOG_LEVEL_STR = typing.Literal[

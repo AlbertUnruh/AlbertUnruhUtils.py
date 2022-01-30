@@ -23,8 +23,12 @@ description = re.search(
 # not in setup.cfg for GitHub's Dependency-Graph
 install_requires = [
     "redis~=4.1.0",
-    "aioredis~=2.0.1",
 ]
+extras_require = {
+    "async": [
+        "aioredis~=2.0.1",
+    ],
+}
 
 
 # not really my code... (https://github.com/Rapptz/discord.py/blob/master/setup.py#L15)
@@ -67,4 +71,5 @@ setup(
     author=author,
     description=description,
     install_requires=install_requires,
+    extras_require=extras_require,
 )

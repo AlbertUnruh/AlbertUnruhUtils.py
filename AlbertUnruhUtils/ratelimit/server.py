@@ -1,12 +1,11 @@
-import typing
+__all__ = ("ServerRateLimit",)
 
+
+import functools
+import typing
+import uuid
 from redis import Redis
 from time import time
-import uuid
-import functools
-
-
-__all__ = ("ServerRateLimit",)
 
 
 C_IN = typing.TypeVar("C_IN")
