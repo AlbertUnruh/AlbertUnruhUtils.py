@@ -133,15 +133,21 @@ def not_implemented(
     return outer
 
 
-@not_implemented("should be implemented in next push")
 def copy_docs(
     docs: typing.Union[str, object]
 ) -> typing.Callable[[_Function], _Function]:
     """
+    Copies docs from an object or str to the decorated function/method/class.
+
     docs: str, object
         The docs to copy.
-
-    Returns
-    -------
-    _Function
     """
+
+    def decorator(func: _Function) -> _Function:
+        if not isinstance(docs, str):
+            func.__doc__ = docs.__doc__
+        else:
+            func.__doc__ = docs
+        return func
+
+    return decorator
