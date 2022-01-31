@@ -8,7 +8,9 @@ __description__ = "A collection of utils written in Python."
 from . import config
 from . import ratelimit
 from . import utils
+from . import visual
 
 from .config import *
 from .ratelimit import *
 from .utils import *
+from .visual import *
