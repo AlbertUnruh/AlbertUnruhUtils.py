@@ -134,7 +134,9 @@ def not_implemented(
 
 
 @not_implemented("should be implemented in next push")
-def copy_docs(docs: typing.Union[str, object]) -> typing.Callable[[_Function], _Function]:
+def copy_docs(
+    docs: typing.Union[str, object]
+) -> typing.Callable[[_Function], _Function]:
     """
     docs: str, object
         The docs to copy.

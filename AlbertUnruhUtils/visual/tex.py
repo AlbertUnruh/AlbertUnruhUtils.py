@@ -9,6 +9,9 @@ from os import PathLike
 import matplotlib.pyplot as plt
 from PIL import Image, ImageChops
 
+from ..utils import not_implemented
+from .. import __url__
+
 
 _PathLike = typing.Union[
     PathLike,
@@ -22,7 +25,7 @@ _Color = typing.Union[
     # RGB
     tuple[float, float, float],
     list[float, float, float],
-    # name
+    # name or HEX-code
     str,
 ]
 
@@ -60,10 +63,44 @@ class TeX:
         color
             Sets the default value for `color`.
         """
+        if not tex.startswith("$"):
+            tex = f"${tex}$"
+
         self._tex = tex
         self._file = Path(file)
         self._format = format
         self._color = color
+
+    @classmethod
+    @not_implemented(
+        f"This feature is coming soon. Feel free to push it and open a PR on GitHub ({__url__})."
+    )
+    def from_python_code(
+        cls,
+        function: typing.Callable,
+        *,
+        file: _PathLike = "tex.png",
+        format: str = "png",  # noqa
+        color: _Color = "#fe4b03",  # aka "blood orange"
+    ) -> "TeX":
+        """
+        Creates TeX from a function.
+
+        Parameters
+        ----------
+        function: typing.Callable
+            The Function which should be converted to TeX.
+        file: _PathLike
+            Sets the default value for `file`.
+        format
+            Sets the default value for `format`.
+        color
+            Sets the default value for `color`.
+
+        Returns
+        -------
+        TeX
+        """
 
     @property
     def tex(self) -> str:
@@ -110,7 +147,7 @@ class TeX:
         buffer = BytesIO()
         plt.rc("text", usetex=True)
         plt.axis("off")
-        plt.text(0, 0, f"${self._tex}$", size=40, color=color)
+        plt.text(0, 0, self._tex, size=40, color=color)
         plt.savefig(buffer, format=format, transparent=True)
         plt.close()
 
