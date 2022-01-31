@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## Unreleased
-### Addded
+### Added
+- `.utils.decorator` (simple decorator you can use over time)
 - `.visual.tex` (to create tex-images from str)
 
 ### Fixed
