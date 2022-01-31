@@ -65,6 +65,22 @@ class TeX:
         self._format = format
         self._color = color
 
+    @property
+    def tex(self) -> str:
+        return self._tex
+
+    @property
+    def default_color(self) -> _Color:
+        return self._color
+
+    @property
+    def default_file(self) -> Path:
+        return self._file
+
+    @property
+    def default_format(self) -> str:
+        return self._format
+
     def create_image(
         self,
         *,
@@ -87,9 +103,9 @@ class TeX:
             The TeX-image.
         """
         if format is None:
-            format = self._format  # noqa
+            format = self.default_format  # noqa
         if color is None:
-            color = self._color
+            color = self.default_color
 
         buffer = BytesIO()
         plt.rc("text", usetex=True)
@@ -129,13 +145,13 @@ class TeX:
             The path to the saved TeX-image.
         """
         if file is None:
-            file = self._file
+            file = self.default_file
         else:
             file = Path(file)
         if format is None:
-            format = self._format  # noqa
+            format = self.default_format  # noqa
         if color is None:
-            color = self._color
+            color = self.default_color
 
         image = self.create_image(format=format, color=color)
         image.save(file)
