@@ -48,6 +48,18 @@ class TeX:
         format: str = "png",  # noqa
         color: _Color = "#fe4b03",  # aka "blood orange"
     ) -> None:
+        """
+        Parameters
+        ----------
+        tex: str
+            The input which should be displayed.
+        file: _PathLike
+            Sets the default value for `file`.
+        format
+            Sets the default value for `format`.
+        color
+            Sets the default value for `color`.
+        """
         self._tex = tex
         self._file = Path(file)
         self._format = format
@@ -59,6 +71,21 @@ class TeX:
         format: typing.Optional[str] = None,  # noqa
         color: typing.Optional[_Color] = None,
     ) -> Image.Image:
+        """
+        Creates the TeX-image.
+
+        Parameters
+        ----------
+        format: str, optional
+            If `None` the default for `format` 'll be used.
+        color: _Color, optional
+            If `None` the default for `color` 'll be used.
+
+        Returns
+        -------
+        Image.Image
+            The TeX-image.
+        """
         if format is None:
             format = self._format  # noqa
         if color is None:
@@ -66,9 +93,8 @@ class TeX:
 
         buffer = BytesIO()
         plt.rc("text", usetex=True)
-        plt.rc("font", family="serif")
         plt.axis("off")
-        plt.text(0.005, 0.5, f"${self._tex}$", size=40, color=color)
+        plt.text(0, 0, f"${self._tex}$", size=40, color=color)
         plt.savefig(buffer, format=format, transparent=True)
         plt.close()
 
@@ -85,6 +111,23 @@ class TeX:
         format: typing.Optional[str] = None,  # noqa
         color: typing.Optional[_Color] = None,
     ) -> Path:
+        """
+        Saves the TeX-image to a file.
+
+        Parameters
+        ----------
+        file: _PathLike, optional
+            If `None` the default for `file` 'll be used.
+        format: str, optional
+            If `None` the default for `format` 'll be used.
+        color: _Color, optional
+            If `None` the default for `color` 'll be used.
+
+        Returns
+        -------
+        Path
+            The path to the saved TeX-image.
+        """
         if file is None:
             file = self._file
         else:
@@ -103,8 +146,8 @@ class TeX:
 if __name__ == "__main__":
 
     def __main():
-        # Euler's Identity
-        file = TeX(r"e^{i\pi}+1=0").save_to_file()
+        eulers_identity = r"e^{i\pi}+1=0"
+        file = TeX(eulers_identity).save_to_file()
         print(f"saved Euler's Identity to {file.absolute()}")
 
     __main()
