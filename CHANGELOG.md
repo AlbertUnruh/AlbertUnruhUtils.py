@@ -6,7 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## Unreleased
+
+## 2.1.0 - 2022.02.01
 ### Added
+- `/docs` and [RTFD](https://AlbertUnruhUtilsPy.rtfd.io) is online! (Docs for old versions 'll follow soon (and won't be mentioned here))
 - `.utils.decorator` (simple decorator you can use over time)
 - `.visual.tex` (to create tex-images from str)
 
