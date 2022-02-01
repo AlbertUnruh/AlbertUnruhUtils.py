@@ -19,13 +19,7 @@ _PathLike = typing.Union[
     str,
 ]
 _Color = typing.Union[
-    # RGBA
-    tuple[float, float, float, float],
-    list[float, float, float, float],
-    # RGB
-    tuple[float, float, float],
-    list[float, float, float],
-    # name or HEX-code
+    typing.Iterable[float],
     str,
 ]
 
@@ -196,12 +190,10 @@ class TeX:
         return file
 
 
-if __name__ == "__main__":
-
-    def __main():
-        eulers_identity = r"e^{i\pi}+1=0"
-        file = TeX(eulers_identity).save_to_file()
-        print(f"saved Euler's Identity to {file.absolute()}")
-
-    __main()
-    del __main
+def __main():
+    """
+    This is just a little function to test our TeX-cLaSs.
+    """
+    eulers_identity = r"e^{i\pi}+1=0"
+    file = TeX(eulers_identity).save_to_file()
+    print(f"saved Euler's Identity to {file.absolute()}")
