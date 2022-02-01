@@ -107,11 +107,14 @@ def not_implemented(
 
         if update_docs:
             f_o_c = "function" if not hasattr(func, "__self__") else "method"
-            lines = [
+            # this goes on top of the __doc__
+            lines0 = [
                 f"",
-                f"Not Implemented",
-                f"---------------",
                 f"This {f_o_c} " + message.split(maxsplit=1)[-1],
+                f"",
+            ]
+            # this goes at the end of the __doc__
+            lines1 = [
                 f"",
                 f"Raises",
                 f"------",
@@ -119,13 +122,21 @@ def not_implemented(
                 f"",
             ]
             if reason:
-                lines.insert(-1, " " * 4 + reason)
+                lines1.insert(-1, " " * 4 + reason)
             tab = ""
             if func.__doc__:
                 res = re.findall(r"^\s+", func.__doc__)
                 if res:
                     tab = res[0].removeprefix("\n")
-            func.__doc__ += "\n".join(tab + line for line in lines)
+            else:
+                func.__doc__ = ""
+            doc_start = "\n" if func.__doc__.startswith("\n") else ""
+            func.__doc__ = (
+                doc_start
+                + ("\n".join(tab + line for line in lines0))
+                + (func.__doc__ or "")
+            )
+            func.__doc__ += "\n".join(tab + line for line in lines1)
 
         @wraps(func)
         def inner(*_, **__):
