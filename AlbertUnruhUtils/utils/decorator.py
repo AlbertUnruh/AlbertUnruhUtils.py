@@ -142,7 +142,11 @@ def not_implemented(
 
 
 def copy_docs(
-    docs: typing.Union[str, object]
+    docs: typing.Union[str, object],
+    *,
+    append: bool = False,
+    add_copy_note: bool = False,
+    custom_origin: str = None,
 ) -> typing.Callable[[_Function], _Function]:
     """
     Copies docs from an object or str to the decorated function/method/class.
@@ -151,13 +155,57 @@ def copy_docs(
     ----------
     docs: str, object
         The docs to copy.
+    append: bool
+        Whether the docs should be appended or be replaced.
+    add_copy_note: bool
+        Whether the docs should have a note that it was copied or not.
+    custom_origin: str, optional
+        The origin which should be displayed if ``add_copy_note`` is set to ``True``.
     """
+    _docs = copy(docs)
+    if not isinstance(docs, str):
+        docs = docs.__doc__
+
+    if add_copy_note:
+        if custom_origin:
+            origin = custom_origin
+        else:
+            try:
+                origin = _docs.__name__
+            except AttributeError:
+                origin = _docs.__class__.__name__
+        lines = [
+            f"",
+            f"",
+            f"copied from {origin}",
+            f"",
+        ]
+    else:
+        lines = []
 
     def decorator(func: _Function) -> _Function:
-        if not isinstance(docs, str):
-            func.__doc__ = docs.__doc__
-        else:
-            func.__doc__ = docs
+        # to keep the indentation-style
+        tab = ""
+        if func.__doc__:
+            res = re.findall(r"^\s+", func.__doc__)
+            if res:
+                tab = res[0].removeprefix("\n")
+
+        if not append:
+            func.__doc__ = ""
+
+        # to be able to replace it later with ``tab``
+        docs_tab = ""
+        if docs:
+            res = re.findall(r"^\s+", docs)
+            if res:
+                docs_tab = res[0].removeprefix("\n")
+
+        func.__doc__ += "\n".join(
+            tab + line.removeprefix(docs_tab) for line in docs.splitlines()
+        )
+        func.__doc__ += "\n".join(tab + line for line in lines)
+
         return func
 
     return decorator
