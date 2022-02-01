@@ -14,10 +14,10 @@ import re
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath("../../"))
+sys.path.insert(0, os.path.abspath("../"))
 
 
-with open("../../AlbertUnruhUtils/__init__.py") as f:
+with open("../AlbertUnruhUtils/__init__.py") as f:
     file = f.read()
 
 # -- Project information -----------------------------------------------------
