@@ -54,7 +54,6 @@ napoleon_numpy_docstring = True
 autoclass_content = "both"
 autodoc_default_options = {
     "member-order": "bysource",
-    "special-members": "__init__",
 }
 autodoc_typehints = "both"
 
