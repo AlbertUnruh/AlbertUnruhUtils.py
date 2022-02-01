@@ -35,4 +35,4 @@ If you want async-support you have to append `[async]` to the last command.
 
 
 # Docs
-coming soon...
+The docs can be found [here](https://AlbertUnruhUtilsPy.rtfd.io)
