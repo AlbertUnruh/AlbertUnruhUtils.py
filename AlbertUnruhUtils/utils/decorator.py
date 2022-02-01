@@ -51,12 +51,13 @@ def deprecated(
             message += " Use {0} instead.".format(name)
 
         if update_docs:
-            f_o_c = "Function" if not hasattr(func, "__self__") else "Method"
+            f_o_c = "function" if not hasattr(func, "__self__") else "method"
             lines = [
                 f"",
                 f"Deprecation",
                 f"-----------",
                 f"This {f_o_c} " + message.split(maxsplit=1)[-1],
+                f"",
             ]
             tab = ""
             if func.__doc__:
@@ -105,13 +106,20 @@ def not_implemented(
             message += "."
 
         if update_docs:
-            f_o_c = "Function" if not hasattr(func, "__self__") else "Method"
+            f_o_c = "function" if not hasattr(func, "__self__") else "method"
             lines = [
                 f"",
                 f"Not Implemented",
                 f"---------------",
                 f"This {f_o_c} " + message.split(maxsplit=1)[-1],
+                f"",
+                f"Raises",
+                f"------",
+                f"NotImplementedError",
+                f"",
             ]
+            if reason:
+                lines.insert(-1, " " * 4 + reason)
             tab = ""
             if func.__doc__:
                 res = re.findall(r"^\s+", func.__doc__)
@@ -139,6 +147,8 @@ def copy_docs(
     """
     Copies docs from an object or str to the decorated function/method/class.
 
+    Parameters
+    ----------
     docs: str, object
         The docs to copy.
     """
