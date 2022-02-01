@@ -47,9 +47,16 @@ extensions = [
     "sphinx.ext.duration",
     "sphinx.ext.doctest",
     "sphinx.ext.napoleon",
+    "sphinx.ext.coverage",
     "sphinx.ext.autodoc",
 ]
 napoleon_numpy_docstring = True
+autoclass_content = "both"
+autodoc_default_options = {
+    "member-order": "bysource",
+    "special-members": "__init__",
+}
+autodoc_typehints = "both"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
