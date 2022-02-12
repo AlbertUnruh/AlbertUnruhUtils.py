@@ -54,6 +54,14 @@ class STDCopy(TextIOWrapper):
         self._sys_std = getattr(sys, std.lower())
         self.captured = ""
 
+        if std == "stdin":
+            import warnings
+
+            warnings.warn(
+                "Capturing sys.stdin is currently unstable and might not work!",
+                RuntimeWarning,
+            )
+
         super().__init__(BytesIO(), *args, **kwargs)
 
     def write(self, s):
