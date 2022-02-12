@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## Unreleased
+## Added
+- `.utils.capturing` (to capture `sys.std*`)
+
 ### Fixed
 - README.md has now the url to RTFD
 

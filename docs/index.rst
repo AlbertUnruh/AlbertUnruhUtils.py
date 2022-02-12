@@ -31,6 +31,11 @@ Contribute
 * `Source Code`_
 
 
+Changelog
+=========
+The changelog can be found `here`_.
+
+
 Support
 =======
 
@@ -48,3 +53,4 @@ The project is licensed under the `MIT license`_.
 .. _Issue: https://github.com/AlbertUnruh/AlbertUnruhUtils.py/issues
 .. _Source Code: https://github.com/AlbertUnruh/AlbertUnruhUtils.py
 .. _MIT license: https://choosealicense.com/licenses/mit/
+.. _here: https://github.com/AlbertUnruh/AlbertUnruhUtils.py/blob/develop/CHANGELOG.md
