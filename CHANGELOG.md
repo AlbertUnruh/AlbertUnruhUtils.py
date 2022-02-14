@@ -6,8 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## Unreleased
-## Added
+### Added
 - `.utils.capturing` (to capture `sys.std*`)
+
+### Changed
+- `.utils.decorator.deprecated()` supports `doc_style`-argument (currently only `NumPy`)
+- `.utils.decorator.not_implemented()` supports `doc_style`-argument (currently only `NumPy`)
 
 ### Fixed
 - README.md has now the url to RTFD
