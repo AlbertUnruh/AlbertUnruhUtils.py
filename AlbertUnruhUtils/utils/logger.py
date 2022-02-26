@@ -29,7 +29,7 @@ _logging_handler.setFormatter(_logging_formatter)
 def get_logger(
     name: typing.Optional[str],
     *,
-    level: typing.Union[_LOG_LEVEL_STR, int] = "DEBUG",
+    level: typing.Union[_LOG_LEVEL_STR, int, None] = "DEBUG",
     add_handler: bool = True,
 ):
     """
