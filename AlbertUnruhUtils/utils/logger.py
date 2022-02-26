@@ -20,7 +20,7 @@ _LOG_LEVEL_STR = typing.Literal[
     "DEBUG",
     "NOTSET",
 ]
-_F = "\033[33m[{asctime}] [{name}] [{levelname}]\t{message}\033[0m"
+_F = "\033[33m{asctime} {name: <10} {levelname: <10}\t{message}\033[0m"
 _logging_formatter = Formatter(_F, style="{")
 _logging_handler = StreamHandler(sys.stdout)
 _logging_handler.setFormatter(_logging_formatter)
