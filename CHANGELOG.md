@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `.utils.decorator.deprecated()` supports `doc_style`-argument (currently only `NumPy`)
 - `.utils.decorator.not_implemented()` supports `doc_style`-argument (currently only `NumPy`)
-- `.utils.logger` (update string-formatter)
+- `.utils.logger` (update string-formatter and add argument `add_handler` to determinate whether a handler should be added or not (defaults to `True`))
 
 ### Fixed
 - README.md has now the url to RTFD

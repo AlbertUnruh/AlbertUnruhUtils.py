@@ -30,6 +30,7 @@ def get_logger(
     name: typing.Optional[str],
     *,
     level: typing.Union[_LOG_LEVEL_STR, int] = "DEBUG",
+    add_handler: bool = True,
 ):
     """
     Parameters
@@ -37,16 +38,20 @@ def get_logger(
     name: str, optional
         The name from the logger.
         (`root` if `None`)
-    level: _LOG_LEVEL_STR, int
+    level: _LOG_LEVEL_STR, int, optional
         The loglevel.
+    add_handler: bool
+        Whether a handler should be added or not.
 
     Returns
     -------
     logging.Logger
     """
     logger = getLogger(name)
-    logger.addHandler(_logging_handler)
-    if isinstance(level, str):
-        level = level.upper()
-    logger.setLevel(level)
+    if add_handler:
+        logger.addHandler(_logging_handler)
+    if level is not None:
+        if isinstance(level, str):
+            level = level.upper()
+        logger.setLevel(level)
     return logger
