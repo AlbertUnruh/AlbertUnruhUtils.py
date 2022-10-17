@@ -167,7 +167,7 @@ class ServerRateLimit:
         self._redis.zremrangebyscore(key, 0, time())
 
         return self.sections[section]["amount"] - int(
-            self._redis.zcount(key, 0, 2 ** 62) or 0
+            self._redis.zcount(key, 0, 2**62) or 0
         )
 
     def _check_timeout(

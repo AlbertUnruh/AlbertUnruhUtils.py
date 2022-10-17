@@ -4,6 +4,7 @@ __all__ = (
     "not_implemented",
 )
 
+
 import re
 import typing
 import warnings
@@ -13,6 +14,8 @@ from functools import wraps
 
 _Version = typing.Union[str, tuple[int]]
 _Function = typing.TypeVar("_Function", bound=typing.Callable)
+_Docs_NumPy = typing.Literal["NumPy", "numpy", "NumPyDoc", "numpydoc"]
+_Doc_Style = typing.Union[_Docs_NumPy]
 
 
 def deprecated(
@@ -20,6 +23,7 @@ def deprecated(
     *,
     instead: typing.Union[str, typing.Callable] = None,
     update_docs: bool = True,
+    doc_style: _Doc_Style = "NumPy",
 ) -> typing.Callable[[_Function], _Function]:
     """
     Marks a function/method as deprecated.
@@ -32,6 +36,8 @@ def deprecated(
         What function/method should be used instead.
     update_docs: bool
         Whether the docs should be updated or not.
+    doc_style: _Doc_Style
+        The DocStyle to use to update the docs.
     """
 
     def outer(func: _Function) -> _Function:
@@ -51,14 +57,31 @@ def deprecated(
             message += " Use {0} instead.".format(name)
 
         if update_docs:
-            f_o_c = "function" if not hasattr(func, "__self__") else "method"
-            lines = [
-                f"",
-                f"Deprecation",
-                f"-----------",
-                f"This {f_o_c} " + message.split(maxsplit=1)[-1],
-                f"",
-            ]
+            # know issue: if a class isn't initialized
+            # the method will be called function
+            f_o_c = func.__class__.__name__
+
+            # NumPy
+            if doc_style in _Docs_NumPy.__args__:  # type: ignore
+                lines = [
+                    f"",
+                    f"Deprecation",
+                    f"-----------",
+                    f"This {f_o_c} " + message.split(maxsplit=1)[-1],
+                    f"",
+                ]
+
+            # invalid
+            else:
+                supported = []
+                for g in _Doc_Style.__args__:  # type: ignore
+                    for s in g.__args__:
+                        supported.append(s)
+                raise ValueError(
+                    f"Unknown or unsupported formatting style {doc_style!r} for docstrings! "
+                    f"Use one of them instead: {', '.join(supported)}"
+                )
+
             tab = ""
             if func.__doc__:
                 res = re.findall(r"^\s+", func.__doc__)
@@ -84,6 +107,7 @@ def not_implemented(
     reason: str = None,
     *,
     update_docs: bool = True,
+    doc_style: _Doc_Style = "NumPy",
 ) -> typing.Callable[[_Function], _Function]:
     """
     Marks a function/method as not implemented, but as coming soon.
@@ -95,6 +119,8 @@ def not_implemented(
         The reason why this function/method is not implemented yet.
     update_docs: bool
         Whether the docs should be updated or not.
+    doc_style: _Doc_Style
+        The DocStyle to use to update the docs.
     """
 
     def outer(func: _Function) -> _Function:
@@ -106,23 +132,40 @@ def not_implemented(
             message += "."
 
         if update_docs:
-            f_o_c = "function" if not hasattr(func, "__self__") else "method"
-            # this goes on top of the __doc__
-            lines0 = [
-                f"",
-                f"This {f_o_c} " + message.split(maxsplit=1)[-1],
-                f"",
-            ]
-            # this goes at the end of the __doc__
-            lines1 = [
-                f"",
-                f"Raises",
-                f"------",
-                f"NotImplementedError",
-                f"",
-            ]
-            if reason:
-                lines1.insert(-1, " " * 4 + reason)
+            # know issue: if a class isn't initialized
+            # the method will be called function
+            f_o_c = func.__class__.__name__
+
+            # NumPy
+            if doc_style in _Docs_NumPy.__args__:  # type: ignore
+                # this goes on top of the __doc__
+                lines0 = [
+                    f"",
+                    f"This {f_o_c} " + message.split(maxsplit=1)[-1],
+                    f"",
+                ]
+                # this goes at the end of the __doc__
+                lines1 = [
+                    f"",
+                    f"Raises",
+                    f"------",
+                    f"NotImplementedError",
+                    f"",
+                ]
+                if reason:
+                    lines1.insert(-1, " " * 4 + reason)
+
+            # invalid
+            else:
+                supported = []
+                for g in _Doc_Style.__args__:  # type: ignore
+                    for s in g.__args__:
+                        supported.append(s)
+                raise ValueError(
+                    f"Unknown or unsupported formatting style {doc_style!r} for docstrings! "
+                    f"Use one of them instead: {', '.join(supported)}"
+                )
+
             tab = ""
             if func.__doc__:
                 res = re.findall(r"^\s+", func.__doc__)

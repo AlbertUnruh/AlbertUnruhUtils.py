@@ -4,8 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
 ## Unreleased
+/
+
+## 2.2.0 - 2022.10.17
+### Added
+- `.utils.capturing` (to capture `sys.std*`)
+
+### Changed
+- `.utils.decorator.deprecated()` supports `doc_style`-argument (currently only `NumPy`)
+- `.utils.decorator.not_implemented()` supports `doc_style`-argument (currently only `NumPy`)
+- `.utils.logger` (update string-formatter and add argument `add_handler` to determinate whether a handler should be added or not (defaults to `True`))
+
+### Fixed
+- README.md has now the url to RTFD
 
 ## 2.1.0 - 2022.02.01
 ### Added

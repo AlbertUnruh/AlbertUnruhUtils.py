@@ -10,7 +10,7 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
 
    AlbertUnruhUtils.asynchronous
    AlbertUnruhUtils.config

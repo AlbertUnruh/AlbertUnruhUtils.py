@@ -10,6 +10,6 @@ Submodules
 ----------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
 
    AlbertUnruhUtils.ratelimit.server

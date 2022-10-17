@@ -10,8 +10,9 @@ Submodules
 ----------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
 
+   AlbertUnruhUtils.utils.capturing
    AlbertUnruhUtils.utils.decorator
    AlbertUnruhUtils.utils.logger
    AlbertUnruhUtils.utils.version
