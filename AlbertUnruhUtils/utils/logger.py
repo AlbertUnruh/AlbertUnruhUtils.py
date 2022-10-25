@@ -10,6 +10,24 @@ from logging import (
 )
 
 
+class ColorStr(str):
+    def format(self, *args, **kwargs):
+        level: int = kwargs.get("levelno", 0)
+        if level >= 50:
+            color_code = "30;47;1"  # CRITICAL/FATAL
+        elif level >= 40:
+            color_code = "31;1"  # ERROR
+        elif level >= 30:
+            color_code = "35"  # WARNING
+        elif level >= 20:
+            color_code = "36"  # INFO
+        elif level >= 10:
+            color_code = "32"  # DEBUG
+        else:
+            color_code = "33;102"  # unknown
+        return super().replace("COLOR-CODE", color_code).format(*args, **kwargs)
+
+
 _LOG_LEVEL_STR = typing.Literal[
     "CRITICAL",
     "FATAL",
@@ -20,7 +38,7 @@ _LOG_LEVEL_STR = typing.Literal[
     "DEBUG",
     "NOTSET",
 ]
-_F = "\033[33m{asctime} \t{name: <15} {levelname: <10}\t{message}\033[0m"
+_F = ColorStr("\033[COLOR-CODEm{asctime} \t{name: <15} {levelname: <10}\t{message}\033[0m")
 _logging_formatter = Formatter(_F, style="{")
 _logging_handler = StreamHandler(sys.stdout)
 _logging_handler.setFormatter(_logging_formatter)
