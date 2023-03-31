@@ -24,7 +24,7 @@ description = re.search(
 install_requires = [
     "redis~=4.3.4",
     "pillow~=9.2.0",
-    "matplotlib~=3.6.1",
+    "matplotlib>=3.6.1,<3.8.0",
 ]
 extras_require = {
     "async": [
