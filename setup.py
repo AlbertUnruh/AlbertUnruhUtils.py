@@ -23,7 +23,7 @@ description = re.search(
 # not in setup.cfg for GitHub's Dependency-Graph
 install_requires = [
     "redis>=4.3.4,<4.6.0",
-    "pillow>=9.2,<9.6",
+    "pillow>=9.2,<10.1",
     "matplotlib>=3.6.1,<3.8.0",
 ]
 extras_require = {
