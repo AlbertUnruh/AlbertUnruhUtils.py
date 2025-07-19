@@ -4,11 +4,19 @@
 # https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 
 version: 2
+
 updates:
-  - package-ecosystem: "pip" # See documentation for possible values
-    directory: "/" # Location of package manifests
+
+  - package-ecosystem: "pip"
+    directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+      day: "monday"
+      time: "01:00"
+      timezone: "Europe/Berlin"
+    reviewers:
+      - "AlbertUnruh"
+    target-branch: "develop"
     pull-request-branch-name:
       separator: "-"
+    open-pull-requests-limit: 10

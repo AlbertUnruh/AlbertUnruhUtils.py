@@ -7,20 +7,16 @@
 [![[tokei.rs - Total Lines]](https://tokei.rs/b1/github/AlbertUnruh/AlbertUnruhUtils.py?category=lines)](https://tokei.rs)
 [![[tokei.rs - Files]](https://tokei.rs/b1/github/AlbertUnruh/AlbertUnruhUtils.py?category=files)](https://tokei.rs)
 
-
-
 # AlbertUnruhUtils.py
 A collection of utils written in Python
 
-
 # Installation
-**Python 3.9 or higher is required!**
+**Python 3.12 or higher is required!**
 
 via pip: (recommended)
 ```shell
 pip3 install -U AlbertUnruhUtils.py
 ```
-If you want async-support you have to append `[async]` to the command.
 
 ---
 latest develop-version:
@@ -31,8 +27,3 @@ git clone https://github.com/AlbertUnruh/AlbertUnruhUtils.py
 cd AlbertUnruhUtils.py
 pip3 install -U .
 ```
-If you want async-support you have to append `[async]` to the last command.
-
-
-# Docs
-The docs can be found [here](https://AlbertUnruhUtilsPy.rtfd.io)

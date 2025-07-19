@@ -1,0 +1,57 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  - repo: https://github.com/python-poetry/poetry-plugin-export
+    rev: '1.9.0'
+    hooks:
+      - id: poetry-export
+        entry: poetry export
+        language: python
+        pass_filenames: false
+        files: ^(.*/)?poetry\.lock$
+        args: [--without-hashes, -f, requirements.txt, -o, requirements.txt]
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: 'v5.0.0'
+    hooks:
+      - id: check-toml
+      - id: check-yaml
+        args: [--unsafe]
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+        exclude_types: [image, binary, executable]
+      - id: debug-statements
+        language_version: python3.12
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+
+  - repo: https://github.com/PyCQA/autoflake
+    rev: 'v2.3.1'
+    hooks:
+      - id: autoflake
+        args: [--remove-all-unused-imports, --in-place, --ignore-init-module-imports]
+
+  - repo: https://github.com/pycqa/isort
+    rev: '6.0.1'
+    hooks:
+      - id: isort
+        language: python
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: 'v0.11.5'
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+        language: python
+
+  - repo: https://github.com/psf/black
+    rev: '25.1.0'
+    hooks:
+      - id: black
+        language_version: python3.12
+
+exclude:
+  'CNAME'
+
+ci:
+  autoupdate_branch: 'develop'

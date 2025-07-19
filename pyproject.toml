@@ -1,0 +1,150 @@
+[project]
+name = "albertunruhutils-py"
+version = "3.0.0"
+description = "A collection of utils written in Python."
+authors = [
+    {name = "Keenan Noack", email = "AlbertUnruh@pm.me"}
+]
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12"
+dynamic = ["dependencies", "optional-dependencies"]
+
+[project.urls]
+homepage = "https://github.com/AlbertUnruh/AlbertUnruhUtils.py"
+soucecode = "https://github.com/AlbertUnruh/AlbertUnruhUtils.py"
+issues = "https://github.com/AlbertUnruh/AlbertUnruhUtils.py/issues"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+packages = [{include = "AlbertUnruhUtils"}]
+requires-poetry = ">=2.0"
+
+[tool.poetry.dependencies]
+
+[tool.poetry.group.dev.dependencies]
+black = ">=25.1.0"  # major and minor aren't semantically versioned but on year and month
+pre-commit = "^4.2.0"
+
+[tool.poetry.group.tests.dependencies]
+pytest = "^8.3.5"
+pytest-cov = "^6.1.1"
+pytest-asyncio = "^0.26.0"
+[tool.black]
+line-length = 120
+target-version = ["py312"]
+include = "\\.pyi?$"
+
+[tool.pytest.ini_options]
+addopts = "--cov=AlbertUnruhUtils --cov-report html"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.coverage.report]
+omit = [
+    # "albertunruhutils/__init__.py",
+    # "albertunruhutils/__main__.py",
+]
+exclude_also = [
+    "def __repr__",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.isort]
+line_length = 120
+py_version = 312
+profile = "black"
+lines_after_imports = 2
+lines_between_sections = 1
+split_on_trailing_comma = true
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+import_heading_stdlib = "standard library"
+import_heading_thirdparty = "third party"
+import_heading_firstparty = "first party"
+import_heading_localfolder = "local"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+output-format = "concise" # set to full if you want to see the source of the error/warning
+
+[tool.ruff.lint]
+task-tags = ["TODO", "FIXME", "NOTE"]
+select = [
+    "F",    # Pyflakes
+    "E",    # pycodestyle
+    "W",    # pycodestyle
+    "C90",  # mccabe
+    "N",    # pep8-naming
+    "D",    # pydocstyle
+    "UP",   # pyudpgrade
+    "YTT",  # flake8-2020
+    "ANN",  # flake8-annotations
+    "S",    # flake8-bandit
+    "BLE",  # flake8-blind-except
+    "FBT",  # flake8-boolean-trap
+    "B",    # flake8-bugbear
+    "A",    # flake8-builtins
+    "C4",   # flake8-comprehensions
+    "DTZ",  # flake8-datetimez
+    "T10",  # flake8-debugger
+    "EM",   # flake8-errmsg
+    "ISC",  # flake8-implicit-str-concat
+    "ICN",  # flake8-import-conventions
+    "LOG",  # flake8-logging
+    "G",    # flake8-logging-format
+    "INP",  # flake8-no-pep420
+    "PIE",  # flake8-pie
+    "T20",  # flake8-print
+    "PT",   # flake8-pytest-style
+    "Q",    # flake8-quotes
+    "RSE",  # flake8-raise
+    "RET",  # flake8-return
+    "SLF",  # flake8-self
+    "SIM",  # flake8-simplify
+    "TCH",  # flake8-type-checking
+    "TC",   # flake8-type-checking
+    "INT",  # flake8-gettext
+    "ARG",  # flake8-unused-arguments
+    "PTH",  # flake8-use-pathlib
+    "PLC",  # Pylint Convention
+    "PLE",  # Pylint Error
+    "PLR",  # Pylint Refactor
+    "PLW",  # Pylint Warning
+    "TRY",  # tryceratops
+    "FLY",  # flynt
+    "PERF", # Perflint
+    "FURB", # refurb
+    "RUF",  # Ruff-specific rules
+]
+ignore = [
+    "D100",   # Missing docstring in public module
+    "D104",   # Missing docstring in public package
+    "G002",   # Logging statement uses `%`
+    "G004",   # Logging statement uses f-string
+]
+per-file-ignores = {"tests/*.py" = ["D1", "S101", "FBT001", "SLF001"], "update_version.py" = ["T201"], "AlbertUnruhUtils/__init__.py" = ["N999"]}
+
+[tool.ruff.lint.flake8-annotations]
+mypy-init-return = true
+suppress-dummy-args = true
+suppress-none-returning = true
+
+[tool.ruff.lint.flake8-errmsg]
+max-string-length = 20
+
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"
+
+[tool.ruff.lint.mccabe]
+max-complexity = 13
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"

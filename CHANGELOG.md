@@ -4,8 +4,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<!-- ## 3.0.0 2025.07.2x -->
 ## Unreleased
-/
+> [Caution]
+> This is a major breaking update in every possible way!
+
+### Removed
+- `.*` **(every previous feature known from `AlbertUnruhUtils.py` < `3.0.0`)**
+
+### Changed
+- `.utils.logger` now lives in `.logger`
+
+### Added
+- `.files.temp_file` (contextmanager for temporary files)
+- `.files.temp_folder` (contextmanager for temporary folders)
+- `.aio.Thread` (asynchronous `threading.Thread`)
+- `.aio.run_as_task` (run awaitable in background as a task)
+- `.aio.run_in_thread` (run a synchronous function non-blocking in an asynchronous environment)
 
 ## 2.3.0 - 2022.10.25
 ### Changed

@@ -1,0 +1,108 @@
+name: Publish Python Package
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  pre-author-check:
+    runs-on: ubuntu-latest
+    outputs:
+      should-publish: ${{ steps.author-check.outputs.should-publish }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ssh-key: ${{ secrets.SECRET_KEY }}
+
+      - name: Get commit SHA for the tag
+        id: get-sha
+        run: echo "sha=$(git rev-list -n 1 ${{ github.ref }})" >> $GITHUB_OUTPUT
+
+      - name: Get commit details
+        id: commit-details
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const sha = '${{ steps.get-sha.outputs.sha }}';
+            const commit = await github.rest.repos.getCommit({
+              owner: owner,
+              repo: repo,
+              ref: sha,
+            });
+            core.setOutput('author', commit.data.commit.author.name);
+
+      - name: Debug Commit Author
+        run: echo "${{ steps.commit-details.outputs.author }}"
+
+      - name: Exit if author is github-actions[bot]
+        id: author-check
+        run: |
+          if [ "${{ steps.commit-details.outputs.author }}" == "github-actions[bot]" ]; then
+            echo "Commit author is github-actions[bot], exiting."
+            echo "should-publish=no" >> $GITHUB_OUTPUT
+          else
+            echo "should-publish=yes" >> $GITHUB_OUTPUT
+          fi
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: pre-author-check
+    if: needs.pre-author-check.outputs.should-publish == 'yes'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        ssh-key: ${{ secrets.SECRET_KEY }}
+
+    - name: Switch to develop branch
+      run: git checkout develop
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.12
+
+    - name: Extract version from tag
+      id: extract_version
+      run: echo "NEW_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+    - name: Update version
+      run: python3 update_version.py ${{ env.NEW_VERSION }}
+
+    - name: Commit update
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add .
+        git commit -m "Update version to ${{ env.NEW_VERSION }}"
+        git push origin develop
+
+    - name: Capture latest commit SHA
+      id: capture_sha
+      run: echo "LATEST_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
+
+    - name: Install Poetry
+      run: curl -sSL https://install.python-poetry.org | python3 -
+
+    - name: Install dependencies
+      run: poetry install
+
+    - name: Build and publish package
+      run: |
+        poetry config pypi-token.pypi ${{ secrets.POETRY_PYPI_TOKEN_PYPI }}
+        poetry publish --build
+
+    - name: Update tag to point to the latest commit
+      run: |
+        git tag -fa ${{ github.ref_name }} -m "Update tag to latest commit"
+        git push origin ${{ github.ref_name }} --force
