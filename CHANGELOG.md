@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- ## 3.0.0 2025.07.2x -->
 ## Unreleased
-> [Caution]
+> [!Caution]
 > This is a major breaking update in every possible way!
 
 ### Removed
