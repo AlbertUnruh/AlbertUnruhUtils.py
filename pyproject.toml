@@ -27,7 +27,7 @@ requires-poetry = ">=2.0"
 
 [tool.poetry.group.dev.dependencies]
 black = ">=25.1.0"  # major and minor aren't semantically versioned but on year and month
-pre-commit = "^4.2.0"
+pre-commit = "^4.5.1"
 
 [tool.poetry.group.tests.dependencies]
 pytest = "^8.3.5"
